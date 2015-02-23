@@ -736,7 +736,7 @@ static void webview_load_status_cb(WebKitWebView *view, GParamSpec *pspec)
                 }
 
                 /* inject the hinting javascript */
-                hints_init(frame);
+                hints_init_object(frame);
 
                 /* run user script file */
                 ctx = webkit_web_frame_get_global_context(frame);
@@ -1028,6 +1028,7 @@ static void init_core(void)
     autocmd_init();
 #endif
     map_init();
+    hints_init();
 
     setup_signals();
 
@@ -1708,6 +1709,7 @@ static void vb_cleanup(void)
     history_cleanup();
     session_cleanup();
     register_cleanup();
+    hints_cleanup();
 #ifdef FEATURE_AUTOCMD
     autocmd_cleanup();
 #endif

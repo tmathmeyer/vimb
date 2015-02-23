@@ -22,6 +22,7 @@ install: $(TARGET) $(DOCDIR)/$(MAN1)
 	install -D -m 755 $(SRCDIR)/$(TARGET) $(DESTDIR)$(BINDIR)/$(TARGET)
 	install -d $(DESTDIR)$(EXAMPLEDIR)
 	cp -r examples/* $(DESTDIR)$(EXAMPLEDIR)
+	cat $(SRCDIR)/hints.js | $(SRCDIR)/minify.sh > $(DESTDIR)$(DATADIR)/$(PROJECT)/hints.js
 	install -d $(DESTDIR)$(MANDIR)/man1
 	@sed -e "s!VERSION!$(VERSION)!g" \
 		-e "s!PREFIX!$(PREFIX)!g" \
@@ -31,6 +32,10 @@ uninstall:
 	$(RM) $(DESTDIR)$(BINDIR)/$(TARGET)
 	$(RM) $(DESTDIR)$(MANDIR)/man1/$(MAN1)
 	$(RM) -r $(DESTDIR)$(EXAMPLEDIR)
+	$(RM) $(DESTDIR)$(DATADIR)/$(PROJECT)/hints.js
+
+sandbox:
+	make PREFIX=$(CURDIR)/sandbox DESTDIR= install
 
 dist: dist-clean
 	@echo "Creating tarball."
@@ -45,4 +50,4 @@ $(TARGET):
 $(LIBTARGET):
 	@$(MAKE) $(MFLAGS) -C src $(LIBTARGET)
 
-.PHONY: clean all install uninstall options dist dist-clean test
+.PHONY: clean all install uninstall options dist dist-clean test sandbox

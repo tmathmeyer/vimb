@@ -315,6 +315,7 @@ typedef struct {
     char            *fifo_path;             /* holds the path to the control fifo */
     char            *socket_path;           /* holds the path to the control socket */
     char            *pid_str;               /* holds the pid as string */
+    char            *hintsjs;               /* The entire content of the hints.js file. */
 } State;
 
 typedef struct {

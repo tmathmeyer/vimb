@@ -1,10 +1,10 @@
 *.[oad]
 *.lo
 *.tar.gz
-src/hints.js.h
 src/config.h
 src/vimb
 src/libvimb.so
+sandbox
 tests/*
 !tests/Makefile
 !tests/*.c

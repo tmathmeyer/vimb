@@ -21,11 +21,11 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkkeysyms-compat.h>
 #include "hints.h"
+#include "util.h"
 #include "main.h"
 #include "ascii.h"
 #include "dom.h"
 #include "command.h"
-#include "hints.js.h"
 #include "input.h"
 #include "map.h"
 #include "js.h"
@@ -53,7 +53,25 @@ static void fire_timeout(gboolean on);
 static gboolean fire_cb(gpointer data);
 
 
-void hints_init(WebKitWebFrame *frame)
+void hints_init(void)
+{
+    /* Read the hints.js file on startup. */
+    char *path = g_build_filename(DATADIR, PROJECT, HINT_FILE, NULL);
+    if (path) {
+        vb.state.hintsjs = util_get_file_contents(path, NULL);
+    }
+    g_free(path);
+}
+
+void hints_cleanup(void)
+{
+    if (vb.state.hintsjs) {
+        g_free(vb.state.hintsjs);
+        vb.state.hintsjs = NULL;
+    }
+}
+
+void hints_init_object(WebKitWebFrame *frame)
 {
     if (hints.obj) {
         JSValueUnprotect(hints.ctx, hints.obj);
@@ -61,7 +79,7 @@ void hints_init(WebKitWebFrame *frame)
     }
     if (!hints.obj) {
         hints.ctx = webkit_web_frame_get_global_context(frame);
-        hints.obj = js_create_object(hints.ctx, HINTS_JS);
+        hints.obj = js_create_object(hints.ctx, vb.state.hintsjs);
     }
 }
 

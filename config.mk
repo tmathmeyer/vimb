@@ -6,6 +6,7 @@ PREFIX     ?= /usr/local
 BINDIR     ?= $(PREFIX)/bin
 MANDIR     ?= $(PREFIX)/share/man
 EXAMPLEDIR ?= $(PREFIX)/share/$(PROJECT)/examples
+DATADIR    ?= $(PREFIX)/share
 
 #----------------compile options---------------------
 
@@ -31,6 +32,7 @@ PROJECT_UCFIRST = $(shell echo '${PROJECT}' | awk '{for(i=1;i<=NF;i++){$$i=toupp
 
 CPPFLAGS  = -DVERSION=\"${VERSION}\"
 CPPFLAGS += -DPROJECT=\"${PROJECT}\" -DPROJECT_UCFIRST=\"${PROJECT_UCFIRST}\"
+CPPFLAGS += -DDATADIR=\"${DATADIR}\"
 CPPFLAGS += -D_XOPEN_SOURCE=500
 CPPFLAGS += -D_POSIX_SOURCE
 ifeq ($(USEGTK3), 1)

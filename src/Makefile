@@ -7,17 +7,10 @@ LOBJ = $(patsubst %.c, %.lo, $(wildcard *.c))
 all: $(TARGET)
 
 clean: clean-lib
-	$(RM) $(TARGET) *.o *.lo hints.js.h
+	$(RM) $(TARGET) *.o *.lo
 
 clean-lib:
 	$(RM) $(LIBTARGET)
-
-hints.o:  hints.js.h
-hints.lo: hints.js.h
-
-hints.js.h: hints.js
-	@echo "minify $<"
-	@cat $< | ./js2h.sh > $@
 
 $(OBJ):  config.h $(BASEDIR)/config.mk
 $(LOBJ): config.h $(BASEDIR)/config.mk

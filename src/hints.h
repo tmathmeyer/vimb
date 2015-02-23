@@ -22,7 +22,9 @@
 
 #include "main.h"
 
-void hints_init(WebKitWebFrame *frame);
+void hints_init(void);
+void hints_cleanup(void);
+void hints_init_object(WebKitWebFrame *frame);
 VbResult hints_keypress(int key);
 void hints_create(const char *input);
 void hints_fire(void);
