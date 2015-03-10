@@ -511,6 +511,7 @@ void vb_update_status_style(void)
     vb_set_widget_font(
         vb.gui.eventbox, &vb.style.status_fg[type], &vb.style.status_bg[type], vb.style.status_font[type]
     );
+#ifndef HAS_GTK3
     vb_set_widget_font(
         vb.gui.statusbar.mode, &vb.style.status_fg[type], &vb.style.status_bg[type], vb.style.status_font[type]
     );
@@ -523,6 +524,7 @@ void vb_update_status_style(void)
     vb_set_widget_font(
         vb.gui.statusbar.cmd, &vb.style.status_fg[type], &vb.style.status_bg[type], vb.style.status_font[type]
     );
+#endif
 }
 
 void vb_update_input_style(void)
@@ -1032,6 +1034,9 @@ static void init_core(void)
 
     setup_signals();
 
+    /* enter normal mode */
+    vb_enter('n');
+
     /* make sure the main window and all its contents are visible */
     gtk_widget_show_all(gui->window);
 
@@ -1050,9 +1055,6 @@ static void init_core(void)
         /* disable context menu */
         g_object_set(G_OBJECT(setting), "enable-default-context-menu", false, NULL);
     }
-
-    /* enter normal mode */
-    vb_enter('n');
 
     vb.config.default_zoom = 1.0;
 

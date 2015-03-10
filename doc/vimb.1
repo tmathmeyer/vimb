@@ -516,7 +516,7 @@ number of keys have no visual representation, a special notation is required.
 .PP
 As special key names have the format \fI<...>\fP.
 The following special keys can be used: <Left>, <Up>, <Right>, <Down>
-for the cursor keys, <Tab>, <Esc>, <CR>, <Space>, <F1>-<F12> and <C-A>-<C-Z>.
+for the cursor keys, <Tab>, <Esc>, <CR>, <Space>, <BS>, <F1>-<F12> and <C-A>-<C-Z>.
 .TP
 .BI ":nm[ap] {" lhs "} {" rhs }
 .TP
@@ -1217,6 +1217,35 @@ This feature filters some kinds of reflective XSS attacks
 on vulnerable web sites.
 .SS Vimb-Settings
 .TP
+.B auto-response-header (list)
+Prepend HTTP-Header to responses received from server, based on pattern
+matching.
+The purpose of this setting is to enforce some security setting in the client.
+For example, you could set Content-Security-Policy (see
+`http://www.w3.org/TR/CSP/') for implement a whitelist policy, or set
+Strict-Transport-Security for server that don't provide this header whereas
+they propose https website.
+.sp
+Note that this setting will not remplace existing headers, but add a new one.
+If multiple patterns match a request uri, the last matched rule will be
+applied.
+You could also specified differents headers for same pattern.
+.sp
+The format is a list of `pattern header-list`.
+If `header-list` has not than one element, enclosing with QUOTE
+is mandatory: `"pattern header-list"`.
+The header-list format is the same as `header` setting.
+.RS
+.PP
+Example:
+.PD 0
+.IP ":set auto-response-header=* Content-security-policy=default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'none'"
+.IP ":set auto-response-header+=https://example.com/* Content-security-policy=default-src 'self' https://*.example.com/"
+.IP ":set auto-response-header+=https://example.com/* Strict-Transport-Security=max-age=31536000"
+.IP ":set auto-response-header+=""https://*.example.org/sub/* Content-security-policy,X-Test=ok"""
+.PD
+.RE
+.TP
 .B ca-bundle (string)
 The path to the crt file for the certificate validation.
 The given path is expanded with standard file expansion.
@@ -1336,34 +1365,9 @@ Header completely from request.
 .PD
 .RE
 .TP
-.B auto-response-header (list)
-Prepend HTTP-Header to responses received from server, based on pattern
-matching.
-The purpose of this setting is to enforce some security setting in the client.
-For example, you could set Content-Security-Policy (see
-`http://www.w3.org/TR/CSP/') for implement a whitelist policy, or set
-Strict-Transport-Security for server that don't provide this header whereas
-they propose https website.
-.sp
-Note that this setting will not remplace existing headers, but add a new one.
-If multiple patterns match a request uri, the last matched rule will be
-applied.
-You could also specified differents headers for same pattern.
-.sp
-The format is a list of `pattern header-list`.
-If `header-list` has not than one element, enclosing with QUOTE
-is mandatory: `"pattern header-list"`.
-The header-list format is the same as `header` setting.
-.RS
-.PP
-Example:
-.PD 0
-.IP ":set auto-response-header=* Content-security-policy=default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'none'"
-.IP ":set auto-response-header+=https://example.com/* Content-security-policy=default-src 'self' https://*.example.com/"
-.IP ":set auto-response-header+=https://example.com/* Strict-Transport-Security=max-age=31536000"
-.IP ":set auto-response-header+=""https://*.example.org/sub/* Content-security-policy,X-Test=ok"""
-.PD
-.RE
+.B hint-follow-last (bool)
+If on, vimb automatically follows the last remaining hint on the page.
+If off hints are fired only if enter is pressed.
 .TP
 .B hint-timeout (int)
 Timeout before automatically following a non-unique numerical hint.
@@ -1535,6 +1539,11 @@ This file holds the history of search queries.
 .TP
 .I bookmark
 Holds the bookmarks saved with command `bma'.
+The records are stored there as
+.br
+`URI<tab>title<tab>space separated tags' or as
+.br
+`URI<tab><tab>tags` if there is no title.
 .TP
 .I queue
 Holds the read it later queue filled by `qpush' if
